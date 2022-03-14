@@ -5,6 +5,7 @@ import { ACESFilmicToneMapping } from 'three';
 //import { WebGLBufferRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+//import { SVGRenderer } from './jsm/renderers/SVGRenderer.js';
 
 const scene = new THREE.Scene();
 
@@ -59,19 +60,20 @@ function addStar() {
 
 Array(10000).fill().forEach(addStar);
 
-const spaceTexture = new THREE.TextureLoader().load('background1.jpeg');
-scene.background = spaceTexture;
+//const spaceTexture = new THREE.TextureLoader().load('BluePlanet.svg');
+//scene.background = spaceTexture;
 
-const universoTexture = new THREE.TextureLoader().load('universo.png');
+const universoTexture = new THREE.TextureLoader().load('code/vite-project/assets/universo.svg');
 
 const universo = new THREE.Mesh(
-  new THREE.BoxGeometry( 8,4, 0.1),
+  //new THREE.SphereGeometry(5, 10, 10),
+  new THREE.BoxGeometry( 8, 4, 0.01),
   new THREE.MeshBasicMaterial( { map: universoTexture } )
 );
 
 scene.add(universo);
 
-const loader = new THREE.ImageLoader();
+//const loader = new THREE.ImageLoader();
 
 // load a image resource
 //loader.load(
@@ -94,19 +96,23 @@ const loader = new THREE.ImageLoader();
 //		console.error( 'An error happened.' );
 //	}
 //);
+ 
 
+const loader = new GLTFLoader();
 
-//const loader = new GLTFLoader();
-
-//loader.load( 'universo3d.glb', function ( glb ) {
+loader.load( 'assets/universo3d.glb', function ( glb ) {
+  glb.scene.scale.set(0.04, 0.04, 0.04); 
+  glb.scene.rotation.x += 3.14/2;
   
-//	scene.add( glb.scene );
+  //glb.scene.t( { map: universoTexture } )
+ 
+	//scene.add( glb.scene );
 
-//}, undefined, function ( error ) {
+}, undefined, function ( error ) {
 
-//	console.error( error );
+	console.error( error );
 
-//} );
+} );
 
 function animate() {
   requestAnimationFrame( animate );
@@ -120,7 +126,9 @@ function animate() {
   torusB.rotation.z += 0.005;
 
   controls.update();
+  scene.updateMatrix();
   renderer.render( scene, camera );
+
 }
 
 animate();
